@@ -8,81 +8,39 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        //1. Cree aleatoriamente N tareas pendientes.
-        Random rand = new();
-        int nTareas = rand.Next(1,6);
-        List<Tarea> TareasPendientes = new();
-        for (int i = 0; i < nTareas; i++)
-        {
-            Tarea aux = new(i, "Hola "+i, rand.Next(10, 101));
-            TareasPendientes.Add(aux);
-        }
-        Console.WriteLine("Tareas Pendientes");
-        mostrarLista(TareasPendientes);
+        string? path = @"/System/Volumes/Data/Users/lucianocosentino/Desktop/Programación/2º Año/1º Cuatrimestre/Taller de Lenguajes I/Semana 7 - 8";
+        // do
+        // {
+        //     Console.Write("Ingrese el path de una carpeta: ");
+        //     path = Console.ReadLine();
+        // } while (path == null);
 
-        //2. Desarrolle una interfaz para mover las tareas pendientes a realizadas.
-        List<Tarea> TareasRealizadas = new();
-        string? respuesta;
-        Console.WriteLine("Tareas Pendientes");
-        for (int i = 0; i < nTareas; i++)
+
+        if (Directory.Exists(path))
         {
-            Console.Write(TareasPendientes[i].mostrarTareas());
-            Console.WriteLine("Tarea realizada?(1=si, 0=no)");
-            respuesta = Console.ReadLine();
-            if (respuesta == "1")
+            List<string> ListadoDeArchivos = Directory.GetFiles(path).ToList();
+            foreach (var archivo in ListadoDeArchivos)
             {
-                TareasRealizadas.Add(TareasPendientes[i]);
+                Console.WriteLine(archivo);
+            }
+
+            using (StreamWriter index = new("index.csv"))
+            {
+                for (int i = 0; i < ListadoDeArchivos.Count; i++)
+                {
+                    var separarBarra = ListadoDeArchivos[i].Split(@"/");
+                    var separarNombre = separarBarra[separarBarra.Length - 1].Split(".");
+                    index.WriteLine(i + ";" + separarNombre[0] + ";" + separarNombre[1]);
+
+                    // var nombreArchivo = Path.GetFileName(ListadoDeArchivos[i]);
+                    // var extensionArchivo = Path.GetExtension(ListadoDeArchivos[i]);
+                    // index.WriteLine($"{i+1};{nombreArchivo};{extensionArchivo}");
+                }
             }
         }
-        foreach (var tarea in TareasRealizadas)
+        else
         {
-            TareasPendientes.Remove(tarea);
-        }
-        Console.WriteLine("Tareas Pendientes");
-        mostrarLista(TareasPendientes);
-        Console.WriteLine("Tareas Realizadas");
-        mostrarLista(TareasRealizadas);
-
-        //3. Desarrolle una interfaz para buscar tareas pendientes por descripción.
-        string? descrip;
-        Console.WriteLine("Ingrese la descripcion de la tarea: ");
-        descrip = Console.ReadLine();
-        foreach (var tarea in TareasPendientes)
-        {
-            if (tarea.Descripcion == descrip)
-            {
-                Console.WriteLine("Tareas Pendientes");
-                Console.Write(tarea.mostrarTareas());
-            }
-        }
-        foreach (var tarea in TareasRealizadas)
-        {
-            if (tarea.Descripcion == descrip)
-            {
-                Console.WriteLine("Tareas Realizadas");
-                Console.Write(tarea.mostrarTareas());
-            }
-        }
-
-        //4. Guarde en un archivo de texto un sumario de las horas trabajadas 
-        //por el empleado (sumatoria de la duración de las tareas).
-        string nombreArchivo = "horasTrabajadas.txt";
-        using (StreamWriter archivo = new(nombreArchivo, true))
-        {
-            int horasTrabajadas = 0;
-            foreach (var tarea in TareasRealizadas)
-            {
-                horasTrabajadas += tarea.Duracion;
-            }
-            archivo.WriteLine($"Horas trabajadas: {horasTrabajadas}");
-        }
-
-    }
-    public static void mostrarLista(List<Tarea> lista)
-    {
-        foreach (var tarea in lista)
-        {
-            Console.Write(tarea.mostrarTareas());
+            Console.WriteLine("La carpeta ingresada no existe.");
         }
     }
 }
