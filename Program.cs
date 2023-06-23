@@ -22,22 +22,7 @@ internal class Program
 
         //2. Desarrolle una interfaz para mover las tareas pendientes a realizadas.
         List<Tarea> TareasRealizadas = new();
-        string? respuesta;
-        Console.WriteLine("Tareas Pendientes");
-        for (int i = 0; i < nTareas; i++)
-        {
-            Console.Write(TareasPendientes[i].mostrarTareas());
-            Console.WriteLine("Tarea realizada?(1=si, 0=no)");
-            respuesta = Console.ReadLine();
-            if (respuesta == "1")
-            {
-                TareasRealizadas.Add(TareasPendientes[i]);
-            }
-        }
-        foreach (var tarea in TareasRealizadas)
-        {
-            TareasPendientes.Remove(tarea);
-        }
+        moverTareas(TareasPendientes, TareasRealizadas);
         Console.WriteLine("Tareas Pendientes");
         mostrarLista(TareasPendientes);
         Console.WriteLine("Tareas Realizadas");
@@ -52,15 +37,7 @@ internal class Program
             if (tarea.Descripcion == descrip)
             {
                 Console.WriteLine("Tareas Pendientes");
-                Console.Write(tarea.mostrarTareas());
-            }
-        }
-        foreach (var tarea in TareasRealizadas)
-        {
-            if (tarea.Descripcion == descrip)
-            {
-                Console.WriteLine("Tareas Realizadas");
-                Console.Write(tarea.mostrarTareas());
+                Console.Write(tarea.mostrarTarea());
             }
         }
 
@@ -69,11 +46,7 @@ internal class Program
         string nombreArchivo = "horasTrabajadas.txt";
         using (StreamWriter archivo = new(nombreArchivo, true))
         {
-            int horasTrabajadas = 0;
-            foreach (var tarea in TareasRealizadas)
-            {
-                horasTrabajadas += tarea.Duracion;
-            }
+            int horasTrabajadas = CantidadHorasTrabajadas(TareasRealizadas);
             archivo.WriteLine($"Horas trabajadas: {horasTrabajadas}");
         }
 
@@ -82,7 +55,35 @@ internal class Program
     {
         foreach (var tarea in lista)
         {
-            Console.Write(tarea.mostrarTareas());
+            Console.Write(tarea.mostrarTarea());
         }
+    }
+    public static void moverTareas(List<Tarea> TareasPendientes, List<Tarea> TareasRealizadas)
+    {
+        string? respuesta;
+        Console.WriteLine("Tareas Pendientes");
+        for (int i = 0; i < TareasPendientes.Count; i++)
+        {
+            Console.Write(TareasPendientes[i].mostrarTarea());
+            Console.WriteLine("Tarea realizada?(1=si, 0=no)");
+            respuesta = Console.ReadLine();
+            if (respuesta == "1")
+            {
+                TareasRealizadas.Add(TareasPendientes[i]);
+            }
+        }
+        foreach (var tarea in TareasRealizadas)
+        {
+            TareasPendientes.Remove(tarea);
+        }
+    }
+    public static int CantidadHorasTrabajadas(List<Tarea> lista)
+    {
+        int horasTrabajadas = 0;
+        foreach (var tarea in lista)
+        {
+            horasTrabajadas += tarea.Duracion;
+        }
+        return horasTrabajadas;
     }
 }

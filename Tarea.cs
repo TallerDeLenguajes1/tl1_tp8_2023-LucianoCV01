@@ -17,7 +17,7 @@ public class Tarea
     public string? Descripcion { get => descripcion; set => descripcion = value; }
     public int Duracion { get => duracion; set => duracion = value; }
 
-    public string mostrarTareas(){
+    public string mostrarTarea(){
         return ($" TareaID: {TareaID}\n Descripcion: {Descripcion}\n Duracion: {Duracion}\n");
     }
 }
